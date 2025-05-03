@@ -11,6 +11,8 @@ import com.kidou.comments_api.model.User;
 import com.kidou.comments_api.model.dto.UserCreateDTO;
 import com.kidou.comments_api.service.UserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
@@ -22,7 +24,7 @@ public class UserController {
     }
 
     @PostMapping("/createUser")
-    public ResponseEntity<User> createUser(@RequestBody UserCreateDTO userCreateDTO) {
+    public ResponseEntity<User> createUser(@RequestBody @Valid UserCreateDTO userCreateDTO) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userCreateDTO));
     }
