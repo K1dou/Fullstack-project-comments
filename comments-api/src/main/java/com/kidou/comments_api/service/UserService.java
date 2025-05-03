@@ -1,8 +1,11 @@
 package com.kidou.comments_api.service;
 
+import java.util.Optional;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import com.kidou.comments_api.exceptions.BusinessException;
 import com.kidou.comments_api.model.User;
 import com.kidou.comments_api.model.dto.UserCreateDTO;
 import com.kidou.comments_api.repository.UserRepository;
@@ -20,6 +23,12 @@ public class UserService {
 
     public User createUser(UserCreateDTO userCreateDTO) {
         User user = modelMapper.map(userCreateDTO, User.class);
+
+        userRepository.findByEmail(user.getEmail())
+                .ifPresent(u -> {
+                    throw new BusinessException("Email already exists");
+                });
+
         userRepository.save(user);
         return user;
     }
