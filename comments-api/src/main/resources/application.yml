@@ -2,10 +2,10 @@ spring:
   application:
     name: comments-api
   datasource:
-    url: jdbc:postgresql://localhost:3306/comments
-    username: root
-    password: root
-    driver-class-name: com.postgresql.Driver
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASS}
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
