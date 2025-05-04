@@ -1,10 +1,17 @@
 package com.kidou.comments_api.controller;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kidou.comments_api.model.dto.CreateCommentDTO;
 import com.kidou.comments_api.model.dto.CreateReplyDTO;
 import com.kidou.comments_api.model.dto.GetCommentsDTO;
+import com.kidou.comments_api.model.dto.UpdateCommentDTO;
 import com.kidou.comments_api.service.CommentService;
 
 class CommentControllerTest {
@@ -110,6 +118,25 @@ class CommentControllerTest {
                 .andExpect(content().string("Comentário excluído com sucesso!"));
 
         verify(commentService, times(1)).deleteComment(1L);
+    }
+
+    @Test
+    void testUpdateComment() throws Exception {
+        // Arrange
+        UpdateCommentDTO updateCommentDTO = new UpdateCommentDTO();
+        updateCommentDTO.setContent("Updated comment");
+
+        when(commentService.updateComment(eq(1L), any(UpdateCommentDTO.class)))
+                .thenReturn("Comentário atualizado com sucesso!");
+
+        // Act & Assert
+        mockMvc.perform(put("/api/v1/comments/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateCommentDTO)))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Comentário atualizado com sucesso!"));
+
+        verify(commentService, times(1)).updateComment(eq(1L), any(UpdateCommentDTO.class));
     }
 
 }

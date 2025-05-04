@@ -95,7 +95,7 @@ public class CommentService {
     public String updateComment(Long id, UpdateCommentDTO updateCommentDTO) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Comentário não encontrado"));
-        comment.setContent(updateCommentDTO.content());
+        comment.setContent(updateCommentDTO.getContent());
         commentRepository.save(comment);
         return "Comentário atualizado com sucesso!";
     }
