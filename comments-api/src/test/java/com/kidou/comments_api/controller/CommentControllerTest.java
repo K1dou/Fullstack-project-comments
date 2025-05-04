@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kidou.comments_api.model.dto.CreateCommentDTO;
 import com.kidou.comments_api.model.dto.CreateReplyDTO;
+import com.kidou.comments_api.model.dto.GetCommentsDTO;
 import com.kidou.comments_api.service.CommentService;
 
 class CommentControllerTest {
@@ -76,6 +77,25 @@ class CommentControllerTest {
                 .andExpect(content().string("Resposta criada com sucesso!"));
 
         verify(commentService, times(1)).createReply(any(CreateReplyDTO.class));
+    }
+
+    @Test
+    void testGetCommentById() throws Exception {
+        // Arrange
+        GetCommentsDTO getCommentsDTO = new GetCommentsDTO();
+        getCommentsDTO.setId(1L);
+        getCommentsDTO.setContent("Test comment");
+
+        when(commentService.getCommentById(1L)).thenReturn(getCommentsDTO);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/comments/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.content").value("Test comment"));
+
+        verify(commentService, times(1)).getCommentById(1L);
     }
 
 }
