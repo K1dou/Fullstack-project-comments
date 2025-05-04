@@ -1,5 +1,7 @@
 package com.kidou.comments_api.service;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -68,6 +70,11 @@ public class CommentService {
         getCommentsDTO.setReplies(comment.getReplies());
 
         return getCommentsDTO;
+    }
+
+    public List<GetCommentsDTO> getAllComments() {
+        List<Comment> comments = commentRepository.findAll();
+        return comments.stream().map(comment -> modelMapper.map(comment, GetCommentsDTO.class)).toList();
     }
 
 }

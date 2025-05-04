@@ -1,5 +1,7 @@
 package com.kidou.comments_api.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +15,10 @@ import com.kidou.comments_api.model.dto.CreateReplyDTO;
 import com.kidou.comments_api.model.dto.GetCommentsDTO;
 import com.kidou.comments_api.service.CommentService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 
 @RestController
@@ -25,6 +31,11 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+    @Operation(summary = "Cria um novo comentário", responses = {
+            @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "Recurso não encontrado"),
+            @ApiResponse(responseCode = "401", description = "Não autorizado")
+    })
     @PostMapping("/create")
     public ResponseEntity<String> createComment(@RequestBody @Valid CreateCommentDTO createCommentDTO) {
         return ResponseEntity.ok(commentService.createComment(createCommentDTO));
@@ -41,4 +52,8 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getCommentById(id));
     }
 
+    @GetMapping()
+    public ResponseEntity<List<GetCommentsDTO>> getAllComments() {
+        return ResponseEntity.ok(commentService.getAllComments());
+    }
 }
