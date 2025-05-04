@@ -117,4 +117,26 @@ class CommentServiceTest {
         verify(commentRepository, never()).save(any(Comment.class));
     }
 
+    @Test
+    void testGetCommentById_Success() {
+        // Arrange
+        Comment comment = new Comment();
+        comment.setId(1L);
+        comment.setContent("Test comment");
+
+        GetCommentsDTO getCommentsDTO = new GetCommentsDTO();
+        getCommentsDTO.setId(1L);
+        getCommentsDTO.setContent("Test comment");
+
+        when(commentRepository.findById(1L)).thenReturn(Optional.of(comment));
+        when(modelMapper.map(comment, GetCommentsDTO.class)).thenReturn(getCommentsDTO);
+
+        // Act
+        GetCommentsDTO result = commentService.getCommentById(1L);
+
+        // Assert
+        assertEquals(1L, result.getId());
+        assertEquals("Test comment", result.getContent());
+    }
+
 }
