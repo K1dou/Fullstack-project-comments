@@ -31,9 +31,9 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @Operation(summary = "Cria um novo comentário", responses = {
-            @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "404", description = "Recurso não encontrado"),
+    @Operation(summary = "Cria um novo comentário", description = "Este endpoint permite criar um novo comentário fornecendo os dados necessários no corpo da requisição.", responses = {
+            @ApiResponse(responseCode = "200", description = "Comentário criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos"),
             @ApiResponse(responseCode = "401", description = "Não autorizado")
     })
     @PostMapping("/create")
@@ -41,17 +41,31 @@ public class CommentController {
         return ResponseEntity.ok(commentService.createComment(createCommentDTO));
     }
 
+    @Operation(summary = "Cria uma resposta para um comentário", description = "Este endpoint permite criar uma resposta para um comentário existente fornecendo os dados necessários no corpo da requisição.", responses = {
+            @ApiResponse(responseCode = "200", description = "Resposta criada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos"),
+            @ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @ApiResponse(responseCode = "404", description = "Comentário não encontrado")
+    })
     @PostMapping("/reply")
     public ResponseEntity<String> createReply(@RequestBody @Valid CreateReplyDTO createReplyDTO) {
         return ResponseEntity.ok(commentService.createReply(createReplyDTO));
     }
 
+    @Operation(summary = "Obtém um comentário pelo ID", description = "Este endpoint retorna os detalhes de um comentário específico com base no ID fornecido.", responses = {
+            @ApiResponse(responseCode = "200", description = "Comentário encontrado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GetCommentsDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Comentário não encontrado"),
+            @ApiResponse(responseCode = "401", description = "Não autorizado")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<GetCommentsDTO> getCommentById(@PathVariable Long id) {
-
         return ResponseEntity.ok(commentService.getCommentById(id));
     }
 
+    @Operation(summary = "Obtém todos os comentários", description = "Este endpoint retorna uma lista de todos os comentários disponíveis.", responses = {
+            @ApiResponse(responseCode = "200", description = "Lista de comentários retornada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GetCommentsDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Não autorizado")
+    })
     @GetMapping()
     public ResponseEntity<List<GetCommentsDTO>> getAllComments() {
         return ResponseEntity.ok(commentService.getAllComments());
