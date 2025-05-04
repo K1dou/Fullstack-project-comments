@@ -147,4 +147,29 @@ class CommentServiceTest {
         // Act & Assert
         assertThrows(BusinessException.class, () -> commentService.getCommentById(1L));
     }
+
+    @Test
+    void testGetTopLevelComments() {
+        // Arrange
+        Comment comment = new Comment();
+        comment.setId(1L);
+        comment.setContent("Top-level comment");
+
+        Page<Comment> page = new PageImpl<>(List.of(comment));
+        PageRequest pageable = PageRequest.of(0, 5);
+
+        GetCommentsDTO getCommentsDTO = new GetCommentsDTO();
+        getCommentsDTO.setId(1L);
+        getCommentsDTO.setContent("Top-level comment");
+
+        when(commentRepository.findByParentCommentIsNull(pageable)).thenReturn(page);
+        when(modelMapper.map(comment, GetCommentsDTO.class)).thenReturn(getCommentsDTO);
+
+        // Act
+        Page<GetCommentsDTO> result = commentService.getTopLevelComments(pageable);
+
+        // Assert
+        assertEquals(1, result.getContent().size());
+        assertEquals("Top-level comment", result.getContent().get(0).getContent());
+    }
 }
