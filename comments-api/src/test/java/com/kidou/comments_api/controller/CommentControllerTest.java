@@ -1,5 +1,6 @@
 package com.kidou.comments_api.controller;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -16,7 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kidou.comments_api.model.dto.CreateCommentDTO;
-
+import com.kidou.comments_api.model.dto.CreateReplyDTO;
 import com.kidou.comments_api.service.CommentService;
 
 class CommentControllerTest {
@@ -55,6 +56,26 @@ class CommentControllerTest {
                 .andExpect(content().string("Comentário criado com sucesso!"));
 
         verify(commentService, times(1)).createComment(any(CreateCommentDTO.class));
+    }
+
+    @Test
+    void testCreateReply() throws Exception {
+        // Arrange
+        CreateReplyDTO createReplyDTO = new CreateReplyDTO();
+        createReplyDTO.setParentId(1L);
+        createReplyDTO.setUserId(2L);
+        createReplyDTO.setContent("Test reply");
+
+        when(commentService.createReply(any(CreateReplyDTO.class))).thenReturn("Resposta criada com sucesso!");
+
+        // Act & Assert
+        mockMvc.perform(post("/api/v1/comments/reply")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createReplyDTO)))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Resposta criada com sucesso!"));
+
+        verify(commentService, times(1)).createReply(any(CreateReplyDTO.class));
     }
 
 }
