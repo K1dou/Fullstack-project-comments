@@ -2,6 +2,9 @@ package com.kidou.comments_api.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kidou.comments_api.model.dto.CreateCommentDTO;
@@ -61,6 +65,21 @@ public class CommentController {
     @GetMapping("/{id}")
     public ResponseEntity<GetCommentsDTO> getCommentById(@PathVariable Long id) {
         return ResponseEntity.ok(commentService.getCommentById(id));
+    }
+
+    @Operation(summary = "Obtém comentários de nível superior (sem pai)", description = "Retorna uma página de comentários principais (aqueles que não são respostas).", responses = {
+            @ApiResponse(responseCode = "200", description = "Lista de comentários principais retornada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GetCommentsDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Não autorizado")
+    })
+    @GetMapping("/comments")
+    public ResponseEntity<Page<GetCommentsDTO>> getTopLevelComments(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<GetCommentsDTO> comments = commentService.getTopLevelComments(pageable);
+
+        return ResponseEntity.ok(comments);
     }
 
     @Operation(summary = "Obtém todos os comentários", description = "Este endpoint retorna uma lista de todos os comentários disponíveis.", responses = {

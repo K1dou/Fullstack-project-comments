@@ -3,6 +3,8 @@ package com.kidou.comments_api.service;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.kidou.comments_api.exceptions.BusinessException;
@@ -70,6 +72,11 @@ public class CommentService {
         getCommentsDTO.setReplies(comment.getReplies());
 
         return getCommentsDTO;
+    }
+
+    public Page<GetCommentsDTO> getTopLevelComments(Pageable pageable) {
+        Page<Comment> page = commentRepository.findByParentCommentIsNull(pageable);
+        return page.map(comment -> modelMapper.map(comment, GetCommentsDTO.class));
     }
 
     public List<GetCommentsDTO> getAllComments() {
