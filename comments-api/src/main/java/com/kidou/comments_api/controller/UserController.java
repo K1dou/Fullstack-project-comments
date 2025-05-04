@@ -5,7 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kidou.comments_api.model.User;
 import com.kidou.comments_api.model.dto.UserCreateDTO;
@@ -33,9 +35,12 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Não autorizado", content = @Content(mediaType = "application/json"))
     })
     @PostMapping("/createUser")
-    public ResponseEntity<User> createUser(@RequestBody @Valid UserCreateDTO userCreateDTO) {
+    public ResponseEntity<User> createUser(
+            @RequestPart("usuario") @Valid UserCreateDTO userCreateDTO,
+            @RequestPart(value = "avatar", required = false) MultipartFile avatar) {
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userCreateDTO));
+        User novoUsuario = userService.createUser(userCreateDTO, avatar);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
     }
 
 }
