@@ -98,4 +98,18 @@ class CommentControllerTest {
         verify(commentService, times(1)).getCommentById(1L);
     }
 
+    @Test
+    void testDeleteComment() throws Exception {
+        // Arrange
+        when(commentService.deleteComment(1L)).thenReturn("Comentário excluído com sucesso!");
+
+        // Act & Assert
+        mockMvc.perform(delete("/api/v1/comments/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Comentário excluído com sucesso!"));
+
+        verify(commentService, times(1)).deleteComment(1L);
+    }
+
 }
