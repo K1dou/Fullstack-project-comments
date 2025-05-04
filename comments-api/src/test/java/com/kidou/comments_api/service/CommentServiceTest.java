@@ -139,4 +139,12 @@ class CommentServiceTest {
         assertEquals("Test comment", result.getContent());
     }
 
+    @Test
+    void testGetCommentById_NotFound() {
+        // Arrange
+        when(commentRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(BusinessException.class, () -> commentService.getCommentById(1L));
+    }
 }
