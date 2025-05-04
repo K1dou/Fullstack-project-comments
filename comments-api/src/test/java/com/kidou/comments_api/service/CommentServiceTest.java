@@ -2,6 +2,7 @@ package com.kidou.comments_api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;
@@ -63,6 +64,19 @@ class CommentServiceTest {
         // Assert
         assertEquals("Comentário criado com sucesso!", result);
         verify(commentRepository, times(1)).save(any(Comment.class));
+    }
+
+    @Test
+    void testCreateComment_UserNotFound() {
+        // Arrange
+        CreateCommentDTO createCommentDTO = new CreateCommentDTO();
+        createCommentDTO.setUserId(1L);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(BusinessException.class, () -> commentService.createComment(createCommentDTO));
+        verify(commentRepository, never()).save(any(Comment.class));
     }
 
 }
