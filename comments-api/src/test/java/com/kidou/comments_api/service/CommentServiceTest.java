@@ -79,4 +79,29 @@ class CommentServiceTest {
         verify(commentRepository, never()).save(any(Comment.class));
     }
 
+    @Test
+    void testCreateReply_Success() {
+        // Arrange
+        CreateReplyDTO createReplyDTO = new CreateReplyDTO();
+        createReplyDTO.setParentId(1L);
+        createReplyDTO.setUserId(2L);
+        createReplyDTO.setContent("Test reply");
+
+        Comment parentComment = new Comment();
+        parentComment.setId(1L);
+
+        User user = new User();
+        user.setId(2L);
+
+        when(commentRepository.findById(1L)).thenReturn(Optional.of(parentComment));
+        when(userRepository.findById(2L)).thenReturn(Optional.of(user));
+
+        // Act
+        String result = commentService.createReply(createReplyDTO);
+
+        // Assert
+        assertEquals("Resposta criada com sucesso!", result);
+        verify(commentRepository, times(1)).save(any(Comment.class));
+    }
+
 }
