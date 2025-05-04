@@ -34,7 +34,7 @@ public class Comment {
     @JsonIgnore
     private Comment parentComment;
 
-    @OneToMany(mappedBy = "parentComment")
+    @OneToMany(mappedBy = "parentComment", orphanRemoval = true)
     private List<Comment> replies = new ArrayList<>();
 
     public Comment() {

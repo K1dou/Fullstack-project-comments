@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kidou.comments_api.model.dto.CreateCommentDTO;
 import com.kidou.comments_api.model.dto.CreateReplyDTO;
 import com.kidou.comments_api.model.dto.GetCommentsDTO;
+import com.kidou.comments_api.model.dto.UpdateCommentDTO;
 import com.kidou.comments_api.service.CommentService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -98,7 +100,17 @@ public class CommentController {
             @ApiResponse(responseCode = "401", description = "Não autorizado")
     })
     public ResponseEntity<String> updateComment(@PathVariable Long id,
-            @RequestBody @Valid CreateCommentDTO createCommentDTO) {
-        return ResponseEntity.ok(commentService.updateComment(id, createCommentDTO));
+            @RequestBody @Valid UpdateCommentDTO updateCommentDTO) {
+        return ResponseEntity.ok(commentService.updateComment(id, updateCommentDTO));
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Exclui um comentário", description = "Este endpoint permite excluir um comentário existente com base no ID fornecido.", responses = {
+            @ApiResponse(responseCode = "200", description = "Comentário excluído com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "Comentário não encontrado"),
+            @ApiResponse(responseCode = "401", description = "Não autorizado")
+    })
+    public ResponseEntity<String> deleteComment(@PathVariable Long id) {
+        return ResponseEntity.ok(commentService.deleteComment(id));
     }
 }

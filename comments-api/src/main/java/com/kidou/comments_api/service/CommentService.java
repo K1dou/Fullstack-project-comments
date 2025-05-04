@@ -14,6 +14,7 @@ import com.kidou.comments_api.model.dto.AuthorDTO;
 import com.kidou.comments_api.model.dto.CreateCommentDTO;
 import com.kidou.comments_api.model.dto.CreateReplyDTO;
 import com.kidou.comments_api.model.dto.GetCommentsDTO;
+import com.kidou.comments_api.model.dto.UpdateCommentDTO;
 import com.kidou.comments_api.repository.CommentRepository;
 import com.kidou.comments_api.repository.UserRepository;
 
@@ -91,10 +92,10 @@ public class CommentService {
         return "Comentário excluído com sucesso!";
     }
 
-    public String updateComment(Long id, CreateCommentDTO createCommentDTO) {
+    public String updateComment(Long id, UpdateCommentDTO updateCommentDTO) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Comentário não encontrado"));
-        comment.setContent(createCommentDTO.getContent());
+        comment.setContent(updateCommentDTO.content());
         commentRepository.save(comment);
         return "Comentário atualizado com sucesso!";
     }
