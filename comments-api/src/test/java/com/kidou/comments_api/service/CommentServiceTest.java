@@ -104,4 +104,17 @@ class CommentServiceTest {
         verify(commentRepository, times(1)).save(any(Comment.class));
     }
 
+    @Test
+    void testCreateReply_ParentCommentNotFound() {
+        // Arrange
+        CreateReplyDTO createReplyDTO = new CreateReplyDTO();
+        createReplyDTO.setParentId(1L);
+
+        when(commentRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(BusinessException.class, () -> commentService.createReply(createReplyDTO));
+        verify(commentRepository, never()).save(any(Comment.class));
+    }
+
 }
