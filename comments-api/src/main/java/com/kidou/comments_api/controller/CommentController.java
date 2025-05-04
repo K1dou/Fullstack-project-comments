@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -69,5 +70,16 @@ public class CommentController {
     @GetMapping()
     public ResponseEntity<List<GetCommentsDTO>> getAllComments() {
         return ResponseEntity.ok(commentService.getAllComments());
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Atualiza um comentário", description = "Este endpoint permite atualizar um comentário existente com base no ID fornecido.", responses = {
+            @ApiResponse(responseCode = "200", description = "Comentário atualizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "Comentário não encontrado"),
+            @ApiResponse(responseCode = "401", description = "Não autorizado")
+    })
+    public ResponseEntity<String> updateComment(@PathVariable Long id,
+            @RequestBody @Valid CreateCommentDTO createCommentDTO) {
+        return ResponseEntity.ok(commentService.updateComment(id, createCommentDTO));
     }
 }
