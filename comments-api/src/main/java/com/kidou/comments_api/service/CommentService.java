@@ -77,4 +77,19 @@ public class CommentService {
         return comments.stream().map(comment -> modelMapper.map(comment, GetCommentsDTO.class)).toList();
     }
 
+    public String deleteComment(Long id) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Comentário não encontrado"));
+        commentRepository.delete(comment);
+        return "Comentário excluído com sucesso!";
+    }
+
+    public String updateComment(Long id, CreateCommentDTO createCommentDTO) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Comentário não encontrado"));
+        comment.setContent(createCommentDTO.getContent());
+        commentRepository.save(comment);
+        return "Comentário atualizado com sucesso!";
+    }
+
 }
