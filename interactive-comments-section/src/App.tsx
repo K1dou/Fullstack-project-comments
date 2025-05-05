@@ -1,10 +1,14 @@
+import CardComment from '../public/CardComment'
+import Container from './components/Container'
 import './index.css'
 
 function App() {
 
   return (
     <>
-      <h1 className='text-amber-600'>teste</h1>
+      <Container>
+        <CardComment />
+      </Container>
     </>
   )
 }
