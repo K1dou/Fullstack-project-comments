@@ -4,19 +4,18 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.kidou.comments_api.model.Comment;
-
 public class GetCommentsDTO {
     private Long id;
     private String content;
     private LocalDateTime createdAt;
     private AuthorDTO author;
-    private List<Comment> replies = new ArrayList<>();
+    private List<GetCommentsDTO> replies = new ArrayList<>();
 
     public GetCommentsDTO() {
     }
 
-    public GetCommentsDTO(Long id, String content, LocalDateTime createdAt, AuthorDTO author, List<Comment> replies) {
+    public GetCommentsDTO(Long id, String content, LocalDateTime createdAt, AuthorDTO author,
+            List<GetCommentsDTO> replies) {
         this.id = id;
         this.content = content;
         this.createdAt = createdAt;
@@ -40,7 +39,7 @@ public class GetCommentsDTO {
         this.author = author;
     }
 
-    public void setReplies(List<Comment> replies) {
+    public void setReplies(List<GetCommentsDTO> replies) {
         this.replies = replies;
     }
 
@@ -60,7 +59,7 @@ public class GetCommentsDTO {
         return author;
     }
 
-    public List<Comment> getReplies() {
+    public List<GetCommentsDTO> getReplies() {
         return replies;
     }
 

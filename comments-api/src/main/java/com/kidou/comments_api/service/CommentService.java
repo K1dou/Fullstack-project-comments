@@ -70,7 +70,9 @@ public class CommentService {
         getCommentsDTO.setContent(comment.getContent());
         getCommentsDTO.setCreatedAt(comment.getCreatedAt());
         getCommentsDTO.setAuthor(modelMapper.map(comment.getAuthor(), AuthorDTO.class));
-        getCommentsDTO.setReplies(comment.getReplies());
+        getCommentsDTO.setReplies(comment.getReplies().stream()
+                .map(reply -> modelMapper.map(reply, GetCommentsDTO.class))
+                .toList());
 
         return getCommentsDTO;
     }
