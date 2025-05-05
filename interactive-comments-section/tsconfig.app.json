@@ -27,6 +27,6 @@
   },
   "include": [
     "src",
-    "public/CardComment.tsx"
+    "src/components/CardComment.tsx"
   ]
 }

@@ -1,5 +1,6 @@
-import CardComment from '../public/CardComment'
+import CardComment from './components/CardComment'
 import Container from './components/Container'
+import FieldAddComent from './components/FieldAddComent'
 import './index.css'
 
 function App() {
@@ -7,7 +8,8 @@ function App() {
   return (
     <>
       <Container>
-        <CardComment />
+        <FieldAddComent />
+
       </Container>
     </>
   )
