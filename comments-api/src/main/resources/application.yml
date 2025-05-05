@@ -4,7 +4,8 @@ spring:
       host: allowed-louse-21787.upstash.io
       port: 6379
       password: ${REDIS_PASS}
-      ssl: true
+      ssl:
+        enabled: true
   application:
     name: comments-api
   datasource:
@@ -15,3 +16,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  #   defer-datasource-initialization: true
+  # sql:
+  #   init:
+  #     mode: always
+
+logging:
+  level:
+    org.springframework.data.redis: DEBUG

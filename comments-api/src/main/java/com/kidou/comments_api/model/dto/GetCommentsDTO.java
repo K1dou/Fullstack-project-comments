@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.kidou.comments_api.model.Comment;
-import com.kidou.comments_api.model.User;
 
 public class GetCommentsDTO {
     private Long id;

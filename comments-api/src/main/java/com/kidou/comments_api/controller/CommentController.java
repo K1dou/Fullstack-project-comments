@@ -21,6 +21,7 @@ import com.kidou.comments_api.model.dto.CreateReplyDTO;
 import com.kidou.comments_api.model.dto.GetCommentsDTO;
 import com.kidou.comments_api.model.dto.UpdateCommentDTO;
 import com.kidou.comments_api.service.CommentService;
+import com.kidou.comments_api.service.RedisLikeService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,9 +34,32 @@ import jakarta.validation.Valid;
 public class CommentController {
 
     private final CommentService commentService;
+    private final RedisLikeService redisLikeService;
 
-    public CommentController(CommentService commentService) {
+    public CommentController(CommentService commentService, RedisLikeService redisLikeService) {
+        this.redisLikeService = redisLikeService;
         this.commentService = commentService;
+    }
+
+    @Operation(summary = "Adiciona um like ao comentário", description = "Este endpoint incrementa o contador de likes de um comentário específico.", responses = {
+            @ApiResponse(responseCode = "200", description = "Like adicionado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Comentário não encontrado"),
+            @ApiResponse(responseCode = "401", description = "Não autorizado")
+    })
+    @PostMapping("/{id}/like")
+    public ResponseEntity<Void> like(@PathVariable Long id) {
+        redisLikeService.likePost(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Consulta o número de likes de um comentário", description = "Retorna a contagem atual de likes de um comentário específico.", responses = {
+            @ApiResponse(responseCode = "200", description = "Contagem de likes retornada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Long.class))),
+            @ApiResponse(responseCode = "404", description = "Comentário não encontrado"),
+            @ApiResponse(responseCode = "401", description = "Não autorizado")
+    })
+    @GetMapping("/{id}/likes")
+    public ResponseEntity<Long> getLikes(@PathVariable Long id) {
+        return ResponseEntity.ok(redisLikeService.getLikeCount(id));
     }
 
     @Operation(summary = "Cria um novo comentário", description = "Este endpoint permite criar um novo comentário fornecendo os dados necessários no corpo da requisição.", responses = {

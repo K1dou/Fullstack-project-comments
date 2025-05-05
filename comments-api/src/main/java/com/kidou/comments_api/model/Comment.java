@@ -22,6 +22,8 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Integer likeCount = 0;
+
     private String content;
     private LocalDateTime createdAt;
 
@@ -51,6 +53,18 @@ public class Comment {
         this.id = id;
         this.content = content;
         this.author = author;
+    }
+
+    public Integer getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(Integer likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Long getId() {
