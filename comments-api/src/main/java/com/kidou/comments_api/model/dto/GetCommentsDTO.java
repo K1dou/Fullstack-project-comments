@@ -8,6 +8,7 @@ public class GetCommentsDTO {
     private Long id;
     private String content;
     private LocalDateTime createdAt;
+    private Integer likeCount;
     private AuthorDTO author;
     private List<GetCommentsDTO> replies = new ArrayList<>();
 
@@ -15,12 +16,13 @@ public class GetCommentsDTO {
     }
 
     public GetCommentsDTO(Long id, String content, LocalDateTime createdAt, AuthorDTO author,
-            List<GetCommentsDTO> replies) {
+            List<GetCommentsDTO> replies, Integer likeCount) {
         this.id = id;
         this.content = content;
         this.createdAt = createdAt;
         this.author = author;
         this.replies = replies;
+        this.likeCount = likeCount;
     }
 
     public void setId(Long id) {
@@ -61,6 +63,14 @@ public class GetCommentsDTO {
 
     public List<GetCommentsDTO> getReplies() {
         return replies;
+    }
+
+    public Integer getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(Integer likeCount) {
+        this.likeCount = likeCount;
     }
 
 }
