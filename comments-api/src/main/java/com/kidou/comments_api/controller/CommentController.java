@@ -58,7 +58,7 @@ public class CommentController {
             @ApiResponse(responseCode = "401", description = "Não autorizado")
     })
     @GetMapping("/{id}/likes")
-    public ResponseEntity<Long> getLikes(@PathVariable Long id) {
+    public ResponseEntity<Integer> getLikes(@PathVariable Long id) {
         return ResponseEntity.ok(redisLikeService.getLikeCount(id));
     }
 
