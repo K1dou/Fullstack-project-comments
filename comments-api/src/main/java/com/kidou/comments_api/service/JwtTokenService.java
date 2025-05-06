@@ -27,7 +27,7 @@ public class JwtTokenService {
                     .withIssuer("comments-api")
                     .withIssuedAt(creationDate())
                     .withExpiresAt(expirationDate())
-                    .withSubject(user.getUsername())
+                    .withSubject(user.getEmail())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
             throw new JWTCreationException("Erro ao gerar token.", exception);

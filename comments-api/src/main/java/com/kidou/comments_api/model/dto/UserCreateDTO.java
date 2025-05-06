@@ -8,7 +8,7 @@ public class UserCreateDTO {
 
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
-    private String username;
+    private String nome;
     @Size(min = 6, max = 20, message = "Password must be between 6 and 20 characters")
     @NotBlank(message = "Password is required")
     private String password;
@@ -20,19 +20,19 @@ public class UserCreateDTO {
     public UserCreateDTO() {
     }
 
-    public UserCreateDTO(String username, String password, String email, String avatarUrl) {
-        this.username = username;
+    public UserCreateDTO(String nome, String password, String email, String avatarUrl) {
+        this.nome = nome;
         this.password = password;
         this.email = email;
         this.avatarUrl = avatarUrl;
     }
 
-    public String getUsername() {
-        return username;
+    public String getNome() {
+        return nome;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public String getPassword() {

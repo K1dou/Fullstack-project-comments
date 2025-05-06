@@ -2,15 +2,15 @@ package com.kidou.comments_api.model.dto;
 
 public class AuthorDTO {
     private Long id;
-    private String username;
+    private String nome;
     private String avatarUrl;
 
     public AuthorDTO() {
     }
 
-    public AuthorDTO(Long id, String username, String avatarUrl) {
+    public AuthorDTO(Long id, String nome, String avatarUrl) {
         this.id = id;
-        this.username = username;
+        this.nome = nome;
         this.avatarUrl = avatarUrl;
     }
 
@@ -22,12 +22,12 @@ public class AuthorDTO {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getNome() {
+        return nome;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public String getAvatarUrl() {

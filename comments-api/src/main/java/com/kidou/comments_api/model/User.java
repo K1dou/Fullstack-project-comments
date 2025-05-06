@@ -3,7 +3,6 @@ package com.kidou.comments_api.model;
 import java.util.Collection;
 import java.util.List;
 
-import org.hibernate.annotations.ManyToAny;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -14,8 +13,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
@@ -28,7 +27,7 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(nullable = false)
-    private String username;
+    private String nome;
 
     @Column(nullable = false)
     private String password;
@@ -46,9 +45,9 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(Long id, String username, String password, String email) {
+    public User(Long id, String nome, String password, String email) {
         this.id = id;
-        this.username = username;
+        this.nome = nome;
         this.password = password;
         this.email = email;
     }
@@ -61,12 +60,12 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getNome() {
+        return nome;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public String getPassword() {
@@ -91,6 +90,11 @@ public class User implements UserDetails {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
     }
 
     @Override
