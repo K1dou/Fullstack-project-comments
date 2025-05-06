@@ -24,8 +24,11 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private ModelMapper modelMapper;
+    private final RedisLikeService redisLikeService;
 
-    public CommentService(CommentRepository commentRepository, UserRepository userRepository, ModelMapper modelMapper) {
+    public CommentService(CommentRepository commentRepository, UserRepository userRepository, ModelMapper modelMapper,
+            RedisLikeService redisLikeService) {
+        this.redisLikeService = redisLikeService;
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
@@ -84,7 +87,14 @@ public class CommentService {
 
     public List<GetCommentsDTO> getAllComments() {
         List<Comment> comments = commentRepository.findAll();
-        return comments.stream().map(comment -> modelMapper.map(comment, GetCommentsDTO.class)).toList();
+
+        return comments.stream()
+                .map(comment -> {
+                    GetCommentsDTO dto = modelMapper.map(comment, GetCommentsDTO.class);
+                    dto.setLikeCount(redisLikeService.getLikeCount(comment.getId()));
+                    return dto;
+                })
+                .toList();
     }
 
     public String deleteComment(Long id) {

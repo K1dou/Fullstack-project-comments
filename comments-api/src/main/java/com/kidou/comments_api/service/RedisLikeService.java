@@ -20,9 +20,9 @@ public class RedisLikeService {
         redisTemplate.opsForValue().increment(getKey(commentId));
     }
 
-    public long getLikeCount(Long commentId) {
+    public int getLikeCount(Long commentId) {
         String value = redisTemplate.opsForValue().get(getKey(commentId));
-        return value != null ? Long.parseLong(value) : 0;
+        return (int) (value != null ? Long.parseLong(value) : 0);
     }
 
 }
