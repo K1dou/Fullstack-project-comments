@@ -7,9 +7,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class RedisLikeService {
 
-    @Value("${REDIS_PASS}")
-    private String RedisPass;
-
     private final StringRedisTemplate redisTemplate;
 
     public RedisLikeService(StringRedisTemplate redisTemplate) {
@@ -25,7 +22,6 @@ public class RedisLikeService {
     }
 
     public int getLikeCount(Long commentId) {
-        System.out.println("RedisPass: " + RedisPass);
         String value = redisTemplate.opsForValue().get(getKey(commentId));
         return (int) (value != null ? Long.parseLong(value) : 0);
     }

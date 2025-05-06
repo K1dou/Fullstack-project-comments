@@ -1,11 +1,12 @@
 spring:
   data:
     redis:
-      host: allowed-louse-21787.upstash.io
-      port: 6379
-      password: ${REDIS_PASS}
-      ssl:
-        enabled: true
+      url: ${REDISCLOUD_URL}
+      # host: allowed-louse-21787.upstash.io
+      # port: 6379
+      # password: ${REDIS_PASS}
+      # ssl:
+      #   enabled: true
   application:
     name: comments-api
   datasource:
