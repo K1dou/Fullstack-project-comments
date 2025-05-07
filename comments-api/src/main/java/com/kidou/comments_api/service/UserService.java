@@ -13,7 +13,7 @@ import com.kidou.comments_api.enums.RoleName;
 import com.kidou.comments_api.exceptions.BusinessException;
 import com.kidou.comments_api.model.Role;
 import com.kidou.comments_api.model.User;
-import com.kidou.comments_api.model.dto.LoginUserDTO;
+import com.kidou.comments_api.model.dto.AuthorDTO;
 import com.kidou.comments_api.model.dto.UserCreateDTO;
 import com.kidou.comments_api.repository.RoleRepository;
 import com.kidou.comments_api.repository.UserRepository;
@@ -58,6 +58,10 @@ public class UserService {
 
         userRepository.save(user);
         return user;
+    }
+
+    public AuthorDTO getAuthenticatedUser(User user) {
+        return AuthorDTO.from(user);
     }
 
 }

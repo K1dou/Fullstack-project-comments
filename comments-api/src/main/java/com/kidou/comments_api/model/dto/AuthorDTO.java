@@ -1,9 +1,19 @@
 package com.kidou.comments_api.model.dto;
 
+import com.kidou.comments_api.model.User;
+
 public class AuthorDTO {
     private Long id;
     private String nome;
     private String avatarUrl;
+
+    public static AuthorDTO from(User user) {
+        AuthorDTO authorDTO = new AuthorDTO();
+        authorDTO.setId(user.getId());
+        authorDTO.setNome(user.getNome());
+        authorDTO.setAvatarUrl(user.getAvatarUrl());
+        return authorDTO;
+    }
 
     public AuthorDTO() {
     }
