@@ -8,7 +8,7 @@ import com.kidou.comments_api.model.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByUsername(String username);
+    Optional<User> findByNome(String nome);
 
     Optional<User> findByEmail(String email);
 

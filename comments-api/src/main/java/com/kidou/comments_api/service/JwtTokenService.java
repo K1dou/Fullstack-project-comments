@@ -17,12 +17,11 @@ import com.kidou.comments_api.model.User;
 public class JwtTokenService {
 
     @Value("${JWT_SECRET}")
-    private String SECRET_KEY;
+    private String secretKey;
 
     public String generateToken(User user) {
         try {
-
-            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
             return JWT.create()
                     .withIssuer("comments-api")
                     .withIssuedAt(creationDate())
@@ -30,20 +29,20 @@ public class JwtTokenService {
                     .withSubject(user.getEmail())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
-            throw new JWTCreationException("Erro ao gerar token.", exception);
+            throw new RuntimeException("Erro ao gerar token.", exception);
         }
     }
 
     public String getSubjectFromToken(String token) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
             return JWT.require(algorithm)
                     .withIssuer("comments-api")
                     .build()
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException exception) {
-            throw new JWTVerificationException("Token inválido ou expirado.");
+            throw new RuntimeException("Token inválido ou expirado.", exception);
         }
     }
 

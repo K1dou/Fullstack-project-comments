@@ -1,17 +1,16 @@
 package com.kidou.comments_api.security;
 
 import java.io.IOException;
-import java.security.Security;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.kidou.comments_api.model.User;
 import com.kidou.comments_api.repository.UserRepository;
-import com.kidou.comments_api.service.CustomUserDetailsService;
 import com.kidou.comments_api.service.JwtTokenService;
 
 import jakarta.servlet.FilterChain;
@@ -32,28 +31,30 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws IOException {
+            throws IOException, ServletException {
+
+        var token = recoveryToken(request);
+
         try {
-            String token = recoveryToken(request);
             if (token != null) {
-                String subject = jwtTokenService.getSubjectFromToken(token);
-                UserDetails user = userRepository.findByEmail(subject).orElse(null);
+                var login = jwtTokenService.getSubjectFromToken(token);
+                var user = userRepository.findByEmail(login)
+                        .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + login));
 
                 var auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
-            filterChain.doFilter(request, response);
-
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Unauthorized: " + e.getMessage());
+
         }
+
+        filterChain.doFilter(request, response);
     }
 
     private String recoveryToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader != null) {
-            return authorizationHeader.replace("Bearer ", "");
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
         }
         return null;
     }

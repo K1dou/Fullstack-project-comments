@@ -1,5 +1,5 @@
 -- USERS
-INSERT INTO users (username, password, email, avatar_url) VALUES 
+INSERT INTO users (nome, password, email, avatar_url ) VALUES 
 ('juliusomo', '123456', 'julio@gmail.com', 'https://res.cloudinary.com/dyctkapys/image/upload/v1746382912/image-juliusomo_vfudnm.png'),
 ('amyrobson', '123456', 'amyrobson@gmail.com', 'https://res.cloudinary.com/dyctkapys/image/upload/v1746382979/image-amyrobson_wntnar.png'),
 ('maxblagun', '123456', 'maxblagun@gmail.com', 'https://res.cloudinary.com/dyctkapys/image/upload/v1746382958/image-maxblagun_ypfgiw.png'),
