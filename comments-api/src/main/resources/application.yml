@@ -17,10 +17,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    #   defer-datasource-initialization: true
-    # sql:
-    #   init:
-    #     mode: always
+      defer-datasource-initialization: true
+    show-sql: true
+  sql:
+    init:
+      mode: always
 logging:
   level:
     org.springframework.data.redis: DEBUG

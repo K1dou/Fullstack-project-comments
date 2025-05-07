@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,6 +54,7 @@ public class UserService {
         user.setRoles(List.of(role));
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        System.out.println("Password: " + user.getPassword());
 
         userRepository.save(user);
         return user;

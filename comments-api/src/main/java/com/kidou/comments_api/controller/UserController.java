@@ -41,7 +41,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Não autorizado", content = @Content(mediaType = "application/json"))
     })
-    @PostMapping("/createUser")
+    @PostMapping(value = "/createUser", consumes = { "multipart/form-data" })
     public ResponseEntity<User> createUser(
             @RequestPart("usuario") @Valid UserCreateDTO userCreateDTO,
             @RequestPart(value = "avatar", required = false) MultipartFile avatar) {
