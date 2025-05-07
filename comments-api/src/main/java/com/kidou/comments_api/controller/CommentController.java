@@ -46,9 +46,31 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "Comentário não encontrado"),
             @ApiResponse(responseCode = "401", description = "Não autorizado")
     })
-    @PostMapping("/{id}/like")
-    public ResponseEntity<Void> like(@PathVariable Long id) {
-        redisLikeService.likePost(id);
+    @PostMapping("/{idComment}/{idUser}/like")
+    public ResponseEntity<Void> like(@PathVariable Long idComment, @PathVariable Long idUser) {
+        redisLikeService.likePost(idComment, idUser);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Remove um like do comentário", description = "Este endpoint decrementa o contador de likes de um comentário específico.", responses = {
+            @ApiResponse(responseCode = "200", description = "Like removido com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Comentário não encontrado"),
+            @ApiResponse(responseCode = "401", description = "Não autorizado")
+    })
+    @PostMapping("/{idComment}/{idUser}/unlike")
+    public ResponseEntity<Void> unlike(@PathVariable Long idComment, @PathVariable Long idUser) {
+        redisLikeService.unlikePost(idComment, idUser);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/reset")
+    @Operation(summary = "Reseta o contador de likes de um comentário", description = "Este endpoint reseta o contador de likes de um comentário específico.", responses = {
+            @ApiResponse(responseCode = "200", description = "Contador de likes resetado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Comentário não encontrado"),
+            @ApiResponse(responseCode = "401", description = "Não autorizado")
+    })
+    public ResponseEntity<Void> resetLikeCount(@PathVariable Long id) {
+        redisLikeService.resetLikeCount(id);
         return ResponseEntity.ok().build();
     }
 
