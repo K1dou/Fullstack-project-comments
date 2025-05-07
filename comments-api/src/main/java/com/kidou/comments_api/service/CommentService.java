@@ -82,7 +82,11 @@ public class CommentService {
 
     public Page<GetCommentsDTO> getTopLevelComments(Pageable pageable) {
         Page<Comment> page = commentRepository.findByParentCommentIsNull(pageable);
-        return page.map(comment -> modelMapper.map(comment, GetCommentsDTO.class));
+        return page.map(comment -> {
+            GetCommentsDTO dto = modelMapper.map(comment, GetCommentsDTO.class);
+            dto.setLikeCount(redisLikeService.getLikeCount(comment.getId()));
+            return dto;
+        });
     }
 
     public List<GetCommentsDTO> getAllComments() {
