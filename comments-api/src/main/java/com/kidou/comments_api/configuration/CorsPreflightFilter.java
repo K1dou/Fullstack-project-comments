@@ -19,7 +19,7 @@ public class CorsPreflightFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-                HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
         // CORS headers
@@ -35,9 +35,5 @@ public class CorsPreflightFilter implements Filter {
 
         chain.doFilter(request, response);
     }
-       
-    }
-
-
 
 }
