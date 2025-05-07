@@ -82,11 +82,22 @@ public class CommentService {
 
     public Page<GetCommentsDTO> getTopLevelComments(Pageable pageable) {
         Page<Comment> page = commentRepository.findByParentCommentIsNull(pageable);
-        return page.map(comment -> {
-            GetCommentsDTO dto = modelMapper.map(comment, GetCommentsDTO.class);
-            dto.setLikeCount(redisLikeService.getLikeCount(comment.getId()));
-            return dto;
-        });
+        return page.map(this::convertCommentWithLikes);
+    }
+
+    private GetCommentsDTO convertCommentWithLikes(Comment comment) {
+        GetCommentsDTO dto = modelMapper.map(comment, GetCommentsDTO.class);
+        dto.setLikeCount(redisLikeService.getLikeCount(comment.getId()));
+
+        // Processa os replies recursivamente
+        if (comment.getReplies() != null && !comment.getReplies().isEmpty()) {
+            dto.setReplies(
+                    comment.getReplies().stream()
+                            .map(this::convertCommentWithLikes)
+                            .toList());
+        }
+
+        return dto;
     }
 
     public List<GetCommentsDTO> getAllComments() {
