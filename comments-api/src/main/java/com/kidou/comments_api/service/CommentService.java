@@ -50,7 +50,7 @@ public class CommentService {
         return "Comentário criado com sucesso!";
     }
 
-    public String createReply(CreateReplyDTO createReplyDTO) {
+    public GetCommentsDTO createReply(CreateReplyDTO createReplyDTO) {
         Comment parentComment = commentRepository.findById(createReplyDTO.getParentId())
                 .orElseThrow(() -> new BusinessException("Comentário pai não encontrado"));
         User user = userRepository.findById(createReplyDTO.getUserId())
@@ -63,7 +63,8 @@ public class CommentService {
 
         commentRepository.save(reply);
 
-        return "Resposta criada com sucesso!";
+        return modelMapper.map(reply, GetCommentsDTO.class);
+
     }
 
     public GetCommentsDTO getCommentById(Long id) {

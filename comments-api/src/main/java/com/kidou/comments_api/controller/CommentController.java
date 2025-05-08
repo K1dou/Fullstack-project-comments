@@ -101,7 +101,7 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "Comentário não encontrado")
     })
     @PostMapping("/reply")
-    public ResponseEntity<String> createReply(@RequestBody @Valid CreateReplyDTO createReplyDTO) {
+    public ResponseEntity<GetCommentsDTO> createReply(@RequestBody @Valid CreateReplyDTO createReplyDTO) {
         return ResponseEntity.ok(commentService.createReply(createReplyDTO));
     }
 
