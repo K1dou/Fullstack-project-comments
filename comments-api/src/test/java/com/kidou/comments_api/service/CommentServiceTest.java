@@ -1,12 +1,14 @@
 package com.kidou.comments_api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,7 @@ import com.kidou.comments_api.model.User;
 import com.kidou.comments_api.model.dto.CreateCommentDTO;
 import com.kidou.comments_api.model.dto.CreateReplyDTO;
 import com.kidou.comments_api.model.dto.GetCommentsDTO;
+import com.kidou.comments_api.model.dto.UpdateCommentDTO;
 import com.kidou.comments_api.repository.CommentRepository;
 import com.kidou.comments_api.repository.UserRepository;
 
@@ -37,6 +40,9 @@ class CommentServiceTest {
 
     @Mock
     private ModelMapper modelMapper;
+
+    @Mock
+    private RedisLikeService redisLikeService;
 
     @InjectMocks
     private CommentService commentService;
@@ -93,14 +99,26 @@ class CommentServiceTest {
         User user = new User();
         user.setId(2L);
 
+        GetCommentsDTO replyDTO = new GetCommentsDTO();
+        replyDTO.setId(2L);
+        replyDTO.setContent("Test reply");
+
         when(commentRepository.findById(1L)).thenReturn(Optional.of(parentComment));
         when(userRepository.findById(2L)).thenReturn(Optional.of(user));
+        when(commentRepository.save(any(Comment.class))).thenAnswer(invocation -> {
+            Comment saved = invocation.getArgument(0);
+            saved.setId(2L); // simula ID gerado
+            return saved;
+        });
+        when(modelMapper.map(any(Comment.class), eq(GetCommentsDTO.class))).thenReturn(replyDTO);
 
         // Act
-        String result = commentService.createReply(createReplyDTO);
+        GetCommentsDTO result = commentService.createReply(createReplyDTO);
 
         // Assert
-        assertEquals("Resposta criada com sucesso!", result);
+        assertNotNull(result);
+        assertEquals(2L, result.getId());
+        assertEquals("Test reply", result.getContent());
         verify(commentRepository, times(1)).save(any(Comment.class));
     }
 
@@ -171,5 +189,98 @@ class CommentServiceTest {
         // Assert
         assertEquals(1, result.getContent().size());
         assertEquals("Top-level comment", result.getContent().get(0).getContent());
+    }
+
+    @Test
+    void testDeleteComment_Success() {
+        // Arrange
+        Comment comment = new Comment();
+        comment.setId(1L);
+
+        when(commentRepository.findById(1L)).thenReturn(Optional.of(comment));
+
+        // Act
+        String result = commentService.deleteComment(1L);
+
+        // Assert
+        assertEquals("Comentário excluído com sucesso!", result);
+        verify(commentRepository, times(1)).delete(comment);
+    }
+
+    @Test
+    void testDeleteComment_NotFound() {
+        // Arrange
+        when(commentRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(BusinessException.class, () -> commentService.deleteComment(1L));
+        verify(commentRepository, never()).delete(any(Comment.class));
+    }
+
+    @Test
+    void testUpdateComment_Success() {
+        // Arrange
+        UpdateCommentDTO updateCommentDTO = new UpdateCommentDTO();
+        updateCommentDTO.setContent("Updated comment");
+
+        Comment comment = new Comment();
+        comment.setId(1L);
+
+        when(commentRepository.findById(1L)).thenReturn(Optional.of(comment));
+
+        // Act
+        String result = commentService.updateComment(1L, updateCommentDTO);
+
+        // Assert
+        assertEquals("Comentário atualizado com sucesso!", result);
+        verify(commentRepository, times(1)).save(comment);
+    }
+
+    @Test
+    void testUpdateComment_NotFound() {
+        // Arrange
+        UpdateCommentDTO updateCommentDTO = new UpdateCommentDTO();
+        updateCommentDTO.setContent("Updated comment");
+
+        when(commentRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(BusinessException.class, () -> commentService.updateComment(1L, updateCommentDTO));
+        verify(commentRepository, never()).save(any(Comment.class));
+    }
+
+    @Test
+    void testGetAllComments() {
+        // Arrange
+        Comment comment1 = new Comment();
+        comment1.setId(1L);
+        comment1.setContent("Comment 1");
+
+        Comment comment2 = new Comment();
+        comment2.setId(2L);
+        comment2.setContent("Comment 2");
+
+        when(commentRepository.findAll()).thenReturn(List.of(comment1, comment2));
+        when(redisLikeService.getLikeCount(1L)).thenReturn(0);
+        when(redisLikeService.getLikeCount(2L)).thenReturn(0);
+        when(modelMapper.map(any(Comment.class), eq(GetCommentsDTO.class)))
+                .thenAnswer(invocation -> {
+                    Comment c = invocation.getArgument(0);
+                    GetCommentsDTO dto = new GetCommentsDTO();
+                    dto.setId(c.getId());
+                    dto.setContent(c.getContent());
+                    return dto;
+                });
+
+        // Act
+        List<GetCommentsDTO> result = commentService.getAllComments();
+
+        // Assert
+        assertEquals(2, result.size());
+        assertEquals("Comment 1", result.get(0).getContent());
+        assertEquals("Comment 2", result.get(1).getContent());
+        verify(commentRepository, times(1)).findAll();
+        verify(redisLikeService, times(1)).getLikeCount(1L);
+        verify(redisLikeService, times(1)).getLikeCount(2L);
     }
 }

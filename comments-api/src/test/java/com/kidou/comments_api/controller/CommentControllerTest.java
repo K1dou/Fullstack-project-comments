@@ -13,6 +13,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -75,14 +77,19 @@ class CommentControllerTest {
         createReplyDTO.setUserId(2L);
         createReplyDTO.setContent("Test reply");
 
-        when(commentService.createReply(any(CreateReplyDTO.class))).thenReturn("Resposta criada com sucesso!");
+        GetCommentsDTO replyResponse = new GetCommentsDTO();
+        replyResponse.setId(2L);
+        replyResponse.setContent("Test reply");
+
+        when(commentService.createReply(any(CreateReplyDTO.class))).thenReturn(replyResponse);
 
         // Act & Assert
         mockMvc.perform(post("/api/v1/comments/reply")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createReplyDTO)))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Resposta criada com sucesso!"));
+                .andExpect(jsonPath("$.id").value(2L))
+                .andExpect(jsonPath("$.content").value("Test reply"));
 
         verify(commentService, times(1)).createReply(any(CreateReplyDTO.class));
     }
@@ -139,4 +146,28 @@ class CommentControllerTest {
         verify(commentService, times(1)).updateComment(eq(1L), any(UpdateCommentDTO.class));
     }
 
+    @Test
+    void testGetAllComments() throws Exception {
+        // Arrange
+        GetCommentsDTO comment1 = new GetCommentsDTO();
+        comment1.setId(1L);
+        comment1.setContent("Comment 1");
+
+        GetCommentsDTO comment2 = new GetCommentsDTO();
+        comment2.setId(2L);
+        comment2.setContent("Comment 2");
+
+        when(commentService.getAllComments()).thenReturn(List.of(comment1, comment2));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/comments")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].content").value("Comment 1"))
+                .andExpect(jsonPath("$[1].id").value(2L))
+                .andExpect(jsonPath("$[1].content").value("Comment 2"));
+
+        verify(commentService, times(1)).getAllComments();
+    }
 }
