@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.kidou.comments_api.exceptions.BusinessException;
@@ -81,15 +83,14 @@ public class CommentService {
     }
 
     public Page<GetCommentsDTO> getTopLevelComments(Pageable pageable) {
-        Page<Comment> page = commentRepository.findByParentCommentIsNull(pageable);
-        return page.map(this::convertCommentWithLikes);
+        Page<Comment> pageResult = commentRepository.findByParentCommentIsNull(pageable);
+        return pageResult.map(this::convertCommentWithLikes);
     }
 
     private GetCommentsDTO convertCommentWithLikes(Comment comment) {
         GetCommentsDTO dto = modelMapper.map(comment, GetCommentsDTO.class);
         dto.setLikeCount(redisLikeService.getLikeCount(comment.getId()));
 
-        // Processa os replies recursivamente
         if (comment.getReplies() != null && !comment.getReplies().isEmpty()) {
             dto.setReplies(
                     comment.getReplies().stream()

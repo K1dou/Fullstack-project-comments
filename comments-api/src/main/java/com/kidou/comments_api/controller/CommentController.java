@@ -120,11 +120,8 @@ public class CommentController {
             @ApiResponse(responseCode = "401", description = "Não autorizado")
     })
     @GetMapping("/comments")
-    public ResponseEntity<Page<GetCommentsDTO>> getTopLevelComments(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
+    public ResponseEntity<Page<GetCommentsDTO>> getTopLevelComments(Pageable pageable) {
 
-        Pageable pageable = PageRequest.of(page, size);
         Page<GetCommentsDTO> comments = commentService.getTopLevelComments(pageable);
 
         return ResponseEntity.ok(comments);
