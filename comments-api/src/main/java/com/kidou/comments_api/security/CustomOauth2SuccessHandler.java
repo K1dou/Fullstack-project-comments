@@ -63,11 +63,8 @@ public class CustomOauth2SuccessHandler implements AuthenticationSuccessHandler 
         });
         String jwt = jwtTokenService.generateToken(user);
         String refreshToken = jwtTokenService.generateRefreshToken(user);
-        // response.sendRedirect("https://interactive-comments-theta-seven.vercel.app/oauth2/callback?token="
-        // + jwt
-        // + "&refreshToken=" + refreshToken);
-
-        response.sendRedirect("http/localhost:5173");
+        response.sendRedirect("https://interactive-comments-theta-seven.vercel.app/oauth2/callback?token=" + jwt
+                + "&refreshToken=" + refreshToken);
     }
 
 }

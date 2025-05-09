@@ -22,6 +22,8 @@ public class CorsPreflightFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
+        // CORS headers
+        res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
         res.setHeader("Access-Control-Allow-Origin", "https://interactive-comments-theta-seven.vercel.app");
         res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
