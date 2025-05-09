@@ -33,6 +33,20 @@ public class JwtTokenService {
         }
     }
 
+    public String generateRefreshToken(User user) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
+            return JWT.create()
+                    .withIssuer("comments-api")
+                    .withIssuedAt(creationDate())
+                    .withExpiresAt(ZonedDateTime.now(ZoneId.of("America/Recife")).plusDays(7).toInstant())
+                    .withSubject(user.getEmail())
+                    .sign(algorithm);
+        } catch (JWTCreationException e) {
+            throw new RuntimeException("Erro ao gerar refresh token.", e);
+        }
+    }
+
     public String getSubjectFromToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
@@ -46,12 +60,25 @@ public class JwtTokenService {
         }
     }
 
+    public boolean isTokenValid(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
+            JWT.require(algorithm)
+                    .withIssuer("comments-api")
+                    .build()
+                    .verify(token);
+            return true;
+        } catch (JWTVerificationException e) {
+            return false;
+        }
+    }
+
     private Instant creationDate() {
         return ZonedDateTime.now(ZoneId.of("America/Recife")).toInstant();
     }
 
     private Instant expirationDate() {
-        return ZonedDateTime.now(ZoneId.of("America/Recife")).plusHours(4).toInstant();
+        return ZonedDateTime.now(ZoneId.of("America/Recife")).plusMinutes(15).toInstant();
     }
 
 }

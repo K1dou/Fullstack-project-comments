@@ -1,8 +1,11 @@
 package com.kidou.comments_api.controller;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kidou.comments_api.model.User;
 import com.kidou.comments_api.model.dto.AuthorDTO;
+import com.kidou.comments_api.model.dto.JwtResponseDTO;
 import com.kidou.comments_api.model.dto.LoginUserDTO;
 import com.kidou.comments_api.model.dto.UserCreateDTO;
 import com.kidou.comments_api.service.AuthService;
@@ -56,9 +60,15 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Requisição inválida.", content = @Content(mediaType = "application/json"))
     })
     @PostMapping("/login")
-    public ResponseEntity<String> authenticateUser(@RequestBody LoginUserDTO loginUserDto) {
-        String token = authService.login(loginUserDto);
-        return new ResponseEntity<>(token, HttpStatus.OK);
+    public ResponseEntity<JwtResponseDTO> authenticateUser(@RequestBody LoginUserDTO loginUserDto) {
+
+        return new ResponseEntity<>(authService.login(loginUserDto), HttpStatus.OK);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(@RequestBody Map<String, String> request) {
+
+        return ResponseEntity.ok(authService.refreshToken(request.get("refreshToken")));
     }
 
     @GetMapping("/me")
