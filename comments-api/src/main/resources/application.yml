@@ -22,11 +22,6 @@ spring:
   data:
     redis:
       url: ${REDISCLOUD_URL}
-      # host: allowed-louse-21787.upstash.io
-      # port: 6379
-      # password: ${REDIS_PASS}
-      # ssl:
-      #   enabled: true
   application:
     name: comments-api
   datasource:
@@ -37,11 +32,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-      defer-datasource-initialization: true
-    show-sql: true
-  sql:
-    init:
-      mode: always
+      # defer-datasource-initialization: true
+    # show-sql: true
+  # sql:
+  #   init:
+  #     mode: always
 logging:
   level:
     org.springframework.data.redis: DEBUG

@@ -47,7 +47,7 @@ public class CustomOauth2SuccessHandler implements AuthenticationSuccessHandler 
         String avatar = oAuth2User.getAttribute("picture");
 
         if (email == null) {
-            response.sendRedirect("http://localhost:5173/login?error=email");
+            response.sendRedirect("https://interactive-comments-theta-seven.vercel.app/login?error=email");
             return;
         }
 
@@ -61,9 +61,8 @@ public class CustomOauth2SuccessHandler implements AuthenticationSuccessHandler 
             newUser.setRoles(List.of(role));
             return userRepository.save(newUser);
         });
-
         String jwt = jwtTokenService.generateToken(user);
-        response.sendRedirect("http://localhost:5173/oauth2/callback?token=" + jwt);
+        response.sendRedirect("https://interactive-comments-theta-seven.vercel.app/oauth2/callback?token=" + jwt);
     }
 
 }
