@@ -41,6 +41,12 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+    @GetMapping("/hello")
+    @Operation(summary = "Endpoint de teste", description = "Este endpoint é usado para verificar se a API está funcionando corretamente.")
+    public ResponseEntity<String> hello() {
+        return ResponseEntity.ok("Hello, World!");
+    }
+
     @Operation(summary = "Adiciona um like ao comentário", description = "Este endpoint incrementa o contador de likes de um comentário específico.", responses = {
             @ApiResponse(responseCode = "200", description = "Like adicionado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Comentário não encontrado"),
