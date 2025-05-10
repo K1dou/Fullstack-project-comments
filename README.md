@@ -33,7 +33,7 @@ Este repositório representa o **back-end** da aplicação fullstack [Interactiv
 * Login com e-mail e senha (JWT)
 * Login social com Google (OAuth2)
 * Geração e renovação de **access token** e **refresh token**
-* Proteção de rotas com `@PreAuthorize`
+
 
 ### 📃 Comentários
 
@@ -77,7 +77,7 @@ src/
 ├── repository/          # Interfaces JPA e custom queries
 ├── security/            # Filtro JWT, OAuth2 handler
 ├── service/             # Regra de negócio
-└── util/                # Auxiliares diversos
+
 ```
 
 ---
