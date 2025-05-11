@@ -15,7 +15,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOriginPatterns(
-                                "http://localhost:*",
+                                "http://localhost:8081",
                                 "https://interactive-comments-theta-seven.vercel.app")
                         .allowedMethods("*")
                         .allowedHeaders("*")
