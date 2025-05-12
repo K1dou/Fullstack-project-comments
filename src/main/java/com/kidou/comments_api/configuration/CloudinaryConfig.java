@@ -20,13 +20,7 @@ public class CloudinaryConfig {
     @Value("${CLOUDINARY_API_SECRET}")
     private String apiSecret;
 
-    @PostConstruct
-    public void init() {
-        System.out.println("Cloudinary config:");
-        System.out.println("Cloud name: " + cloudName);
-        System.out.println("API key: " + apiKey);
-        System.out.println("API secret: " + apiSecret);
-    }
+
 
     @Bean
     public Cloudinary cloudinary() {
