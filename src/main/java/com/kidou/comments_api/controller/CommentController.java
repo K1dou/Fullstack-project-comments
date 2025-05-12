@@ -31,7 +31,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:8081/", "https://interactive-comments-theta-seven.vercel.app"})
+@CrossOrigin(origins = {"http://localhost:8081", "https://interactive-comments-theta-seven.vercel.app"})
 @RequestMapping("/api/v1/comments")
 public class CommentController {
 
