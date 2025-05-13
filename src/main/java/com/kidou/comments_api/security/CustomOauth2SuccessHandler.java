@@ -68,19 +68,28 @@ public class CustomOauth2SuccessHandler implements AuthenticationSuccessHandler 
         String redirectUri = "https://interactive-comments-theta-seven.vercel.app/oauth2/callback"; // fallback padrão
 
         String state = request.getParameter("state");
+        System.out.println("STATE recebido: " + state);
+
+
         if (state != null && !state.isEmpty()) {
             try {
                 redirectUri = RedirectUtil.decode(state);
+                System.out.println("Redirect URI decodificado: " + redirectUri);
             } catch (Exception e) {
-                System.out.println("Falha ao decodificar redirectUri via state: " + e.getMessage());
+                System.out.println("Erro ao decodificar state: " + e.getMessage());
+                redirectUri = "https://interactive-comments-theta-seven.vercel.app/login?error=invalid_state";
             }
         }
 
-
-
-
-        String finalRedirect = String.format("%s?token=%s&refreshToken=%s", redirectUri, jwt, refreshToken);
-        response.sendRedirect(finalRedirect);
+        // Redireciona com os tokens
+        try {
+            String finalRedirect = String.format("%s?token=%s&refreshToken=%s", redirectUri, jwt, refreshToken);
+            System.out.println("Redirecionando para: " + finalRedirect);
+            response.sendRedirect(finalRedirect);
+        } catch (Exception e) {
+            System.out.println("Erro no sendRedirect: " + e.getMessage());
+            response.sendRedirect("https://interactive-comments-theta-seven.vercel.app/login?error=redirect_failed");
+        }
     }
 
 }
