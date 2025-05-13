@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
+import com.kidou.comments_api.utils.RedirectUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -63,8 +64,23 @@ public class CustomOauth2SuccessHandler implements AuthenticationSuccessHandler 
         });
         String jwt = jwtTokenService.generateToken(user);
         String refreshToken = jwtTokenService.generateRefreshToken(user);
-        response.sendRedirect("https://interactive-comments-theta-seven.vercel.app/oauth2/callback?token=" + jwt
-                + "&refreshToken=" + refreshToken);
+
+        String redirectUri = "https://interactive-comments-theta-seven.vercel.app/oauth2/callback"; // fallback padrão
+
+        String state = request.getParameter("state");
+        if (state != null && !state.isEmpty()) {
+            try {
+                redirectUri = RedirectUtil.decode(state);
+            } catch (Exception e) {
+                System.out.println("Falha ao decodificar redirectUri via state: " + e.getMessage());
+            }
+        }
+
+
+
+
+        String finalRedirect = String.format("%s?token=%s&refreshToken=%s", redirectUri, jwt, refreshToken);
+        response.sendRedirect(finalRedirect);
     }
 
 }
