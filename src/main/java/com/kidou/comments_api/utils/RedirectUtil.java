@@ -1,5 +1,6 @@
 package com.kidou.comments_api.utils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public class RedirectUtil {
@@ -9,7 +10,7 @@ public class RedirectUtil {
     }
 
     public static String decode(String encoded) {
-        return new String(Base64.getUrlDecoder().decode(encoded));
+        return new String(Base64.getUrlDecoder().decode(encoded), StandardCharsets.UTF_8);
     }
 
 
