@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -20,15 +22,23 @@ public class SecurityConfiguration {
 
     private final UserAuthenticationFilter securityFilter;
     private final CustomOauth2SuccessHandler customOauth2SuccessHandler;
+    private final ClientRegistrationRepository clientRegistrationRepository;
 
     public SecurityConfiguration(UserAuthenticationFilter securityFilter,
-            CustomOauth2SuccessHandler customOauth2SuccessHandler) {
+            CustomOauth2SuccessHandler customOauth2SuccessHandler,ClientRegistrationRepository clientRegistrationRepository) {
+        this.clientRegistrationRepository = clientRegistrationRepository;
         this.customOauth2SuccessHandler = customOauth2SuccessHandler;
         this.securityFilter = securityFilter;
     }
 
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+
+        OAuth2AuthorizationRequestResolver customResolver =
+                new CustomAuthorizationRequest(clientRegistrationRepository, "/oauth2/authorization");
+
         return httpSecurity.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
@@ -40,8 +50,12 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated())
 
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .oauth2Login(oauth2 -> oauth2.successHandler(customOauth2SuccessHandler))
-
+                .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(config -> config
+                                .authorizationRequestResolver(customResolver)
+                        )
+                        .successHandler(customOauth2SuccessHandler)
+                )
                 .build();
     }
 
