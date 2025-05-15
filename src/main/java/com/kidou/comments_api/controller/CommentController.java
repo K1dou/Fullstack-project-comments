@@ -2,10 +2,12 @@ package com.kidou.comments_api.controller;
 
 import java.util.List;
 
+import com.kidou.comments_api.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,7 +58,7 @@ public class CommentController {
     })
     @PostMapping("/{idComment}/{idUser}/like")
     public ResponseEntity<Void> like(@PathVariable Long idComment, @PathVariable Long idUser) {
-        redisLikeService.likePost(idComment, idUser);
+        commentService.likeComment(idComment, idUser);
         return ResponseEntity.ok().build();
     }
 
@@ -67,7 +69,7 @@ public class CommentController {
     })
     @PostMapping("/{idComment}/{idUser}/unlike")
     public ResponseEntity<Void> unlike(@PathVariable Long idComment, @PathVariable Long idUser) {
-        redisLikeService.unlikePost(idComment, idUser);
+        commentService.unlikeComment(idComment, idUser);
         return ResponseEntity.ok().build();
     }
 
@@ -128,10 +130,13 @@ public class CommentController {
             @ApiResponse(responseCode = "401", description = "Não autorizado")
     })
     @GetMapping("/comments")
-    public ResponseEntity<Page<GetCommentsDTO>> getTopLevelComments(Pageable pageable) {
+    public ResponseEntity<Page<GetCommentsDTO>> getTopLevelComments(
+            Pageable pageable,
+            @AuthenticationPrincipal User user) {
 
-        Page<GetCommentsDTO> comments = commentService.getTopLevelComments(pageable);
+        Long userId = user.getId();
 
+        Page<GetCommentsDTO> comments = commentService.getTopLevelComments(pageable, userId);
         return ResponseEntity.ok(comments);
     }
 
@@ -163,5 +168,11 @@ public class CommentController {
     })
     public ResponseEntity<String> deleteComment(@PathVariable Long id) {
         return ResponseEntity.ok(commentService.deleteComment(id));
+    }
+
+    @PostMapping("/reset-all-likes")
+    public ResponseEntity<String> resetAllLikes() {
+        redisLikeService.resetAllLikes();
+        return ResponseEntity.ok("Todos os likes foram resetados com sucesso!");
     }
 }

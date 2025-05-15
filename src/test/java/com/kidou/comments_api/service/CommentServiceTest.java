@@ -10,6 +10,7 @@ import static org.mockito.Mockito.*;
 import java.util.List;
 import java.util.Optional;
 
+import com.kidou.comments_api.repository.LikeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -43,6 +44,9 @@ class CommentServiceTest {
 
     @Mock
     private RedisLikeService redisLikeService;
+
+    @Mock
+    private LikeRepository likeRepository;
 
     @InjectMocks
     private CommentService commentService;
@@ -180,11 +184,13 @@ class CommentServiceTest {
         getCommentsDTO.setId(1L);
         getCommentsDTO.setContent("Top-level comment");
 
+        when(likeRepository.findAllByUserId(42L)).thenReturn(List.of());
+
         when(commentRepository.findByParentCommentIsNull(pageable)).thenReturn(page);
         when(modelMapper.map(comment, GetCommentsDTO.class)).thenReturn(getCommentsDTO);
 
         // Act
-        Page<GetCommentsDTO> result = commentService.getTopLevelComments(pageable);
+        Page<GetCommentsDTO> result = commentService.getTopLevelComments(pageable, 42L);
 
         // Assert
         assertEquals(1, result.getContent().size());

@@ -1,17 +1,23 @@
 package com.kidou.comments_api.service;
 
+import com.kidou.comments_api.model.Comment;
+import com.kidou.comments_api.repository.CommentRepository;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.kidou.comments_api.exceptions.BusinessException;
 
+import java.util.List;
+
 @Service
 public class RedisLikeService {
 
     private final StringRedisTemplate redisTemplate;
+    private final CommentRepository commentRepository;
 
-    public RedisLikeService(StringRedisTemplate redisTemplate) {
+    public RedisLikeService(StringRedisTemplate redisTemplate, CommentRepository commentRepository) {
         this.redisTemplate = redisTemplate;
+        this.commentRepository = commentRepository;
     }
 
     private String likeKey(Long commentId) {
@@ -54,6 +60,13 @@ public class RedisLikeService {
     public int getLikeCount(Long commentId) {
         String value = redisTemplate.opsForValue().get(likeKey(commentId));
         return (int) (value != null ? Long.parseLong(value) : 0);
+    }
+
+    public void resetAllLikes() {
+        List<Comment> comments = commentRepository.findAll();
+        for (Comment comment : comments) {
+            resetLikeCount(comment.getId());
+        }
     }
 
 }

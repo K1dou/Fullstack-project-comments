@@ -11,12 +11,15 @@ public class GetCommentsDTO {
     private Integer likeCount;
     private AuthorDTO author;
     private List<GetCommentsDTO> replies = new ArrayList<>();
+    private boolean likedByUser;
+
 
     public GetCommentsDTO() {
     }
 
     public GetCommentsDTO(Long id, String content, LocalDateTime createdAt, AuthorDTO author,
-            List<GetCommentsDTO> replies, Integer likeCount) {
+            List<GetCommentsDTO> replies, Integer likeCount, boolean likedByUser) {
+        this.likedByUser= likedByUser;
         this.id = id;
         this.content = content;
         this.createdAt = createdAt;
@@ -47,6 +50,14 @@ public class GetCommentsDTO {
 
     public Long getId() {
         return id;
+    }
+
+    public boolean isLikedByUser() {
+        return likedByUser;
+    }
+
+    public void setLikedByUser(boolean likedByUser) {
+        this.likedByUser = likedByUser;
     }
 
     public String getContent() {
